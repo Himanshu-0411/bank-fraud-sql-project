@@ -1,5 +1,3 @@
--- Small sample data for demonstration
-
 INSERT INTO customers(full_name, email, phone) VALUES
 ('Amit Sharma','amit.sharma@example.com','+919876543210'),
 ('Neha Singh','neha.singh@example.com','+919812345678'),
@@ -13,10 +11,10 @@ INSERT INTO accounts(customer_id, account_number, account_type, balance) VALUES
 
 -- Transactions: normal activity
 INSERT INTO transactions(account_id, tx_type, amount, tx_time, counterparty_account, location, description) VALUES
-(1,'debit', 200.00,  '2025-10-01 09:15:00', NULL, 'Mumbai,IN','groceries'),
-(1,'credit',5000.00, '2025-10-03 10:00:00', NULL, 'Mumbai,IN','salary'),
-(2,'debit',100.00,  '2025-10-05 14:30:00', NULL, 'Pune,IN','utility bill'),
-(3,'debit',50.00,   '2025-10-07 18:00:00', NULL, 'Delhi,IN','coffee');
+(1,'debit',200.00,'2025-10-01 09:15:00',NULL,'Mumbai,IN','groceries'),
+(1,'credit',5000.00,'2025-10-03 10:00:00',NULL,'Mumbai,IN','salary'),
+(2,'debit',100.00,'2025-10-05 14:30:00',NULL,'Pune,IN','utility bill'),
+(3,'debit',50.00,'2025-10-07 18:00:00',NULL,'Delhi,IN','coffee');
 
 -- Suspicious patterns: large & frequent
 INSERT INTO transactions(account_id, tx_type, amount, tx_time, counterparty_account, location, description) VALUES
@@ -24,9 +22,17 @@ INSERT INTO transactions(account_id, tx_type, amount, tx_time, counterparty_acco
 (1,'transfer',3500.00,'2025-10-10 08:05:00','ACC2000001','Mumbai,IN','transfer to friend 2'),
 (1,'transfer',3000.00,'2025-10-10 08:07:00','ACC2000001','Mumbai,IN','rapid transfers'),
 (2,'transfer',12000.00,'2025-10-11 02:00:00','ACC9999999','Lagos,NG','odd overseas transfer'),
-(3,'debit',700.00,'2025-10-12 03:10:00', NULL, 'Kolkata,IN','atm withdrawal');
+(3,'debit',700.00,'2025-10-12 03:10:00',NULL,'Kolkata,IN','atm withdrawal');
 
--- Add a very high-frequency small tx series (velocity) using Postgres generate_series
-INSERT INTO transactions(account_id, tx_type, amount, tx_time, counterparty_account, location, description)
-SELECT 1,'debit', 50.00, '2025-10-13 09:' || lpad((i::text),2,'0') || ':00', NULL, 'Mumbai,IN', 'micro payment'
-FROM generate_series(0,9) AS s(i);
+-- High-frequency micro payments (explicit rows)
+INSERT INTO transactions(account_id, tx_type, amount, tx_time, counterparty_account, location, description) VALUES
+(1,'debit',50.00,'2025-10-13 09:00:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:01:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:02:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:03:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:04:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:05:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:06:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:07:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:08:00',NULL,'Mumbai,IN','micro payment'),
+(1,'debit',50.00,'2025-10-13 09:09:00',NULL,'Mumbai,IN','micro payment');
