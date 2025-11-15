@@ -8,12 +8,8 @@ This project simulates a bank database with customers, accounts, transactions, a
 ## Files
 - schema.sql  
 - sample_data.sql  
-- queries.sql  
-- ER_diagram.txt  
-- resume_lines.txt  
-- presentation_tips.txt  
-- final_notes.txt
-
+- queries.sql
+- 
 ## Running the Project
 1. Create DB: `createdb bank_fraud`
 2. Load schema: `psql -d bank_fraud -f schema.sql`
