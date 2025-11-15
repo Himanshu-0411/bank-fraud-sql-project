@@ -12,7 +12,7 @@ CREATE TABLE accounts (
   account_id SERIAL PRIMARY KEY,
   customer_id INT NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
   account_number TEXT UNIQUE NOT NULL,
-  account_type TEXT NOT NULL,
+  account_type TEXT NOT NULL, -- 'savings', 'current', 'credit'
   balance NUMERIC(14,2) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -20,11 +20,11 @@ CREATE TABLE accounts (
 CREATE TABLE transactions (
   transaction_id SERIAL PRIMARY KEY,
   account_id INT NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
-  tx_type TEXT NOT NULL,
+  tx_type TEXT NOT NULL, -- 'debit', 'credit', 'transfer'
   amount NUMERIC(14,2) NOT NULL CHECK (amount > 0),
   tx_time TIMESTAMP NOT NULL,
   counterparty_account TEXT,
-  location TEXT,
+  location TEXT, -- e.g. 'City,CC' where CC is country code
   description TEXT
 );
 
@@ -36,6 +36,7 @@ CREATE TABLE fraud_alerts (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Indexes for performance
 CREATE INDEX idx_transactions_account_time ON transactions(account_id, tx_time);
 CREATE INDEX idx_transactions_tx_time ON transactions(tx_time);
 CREATE INDEX idx_transactions_amount ON transactions(amount);
