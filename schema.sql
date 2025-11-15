@@ -1,39 +1,45 @@
 -- Schema for Bank Transactions Fraud Analysis (Postgres)
+create database bank;
+use bank;
 
 CREATE TABLE customers (
-  customer_id SERIAL PRIMARY KEY,
-  full_name TEXT NOT NULL,
-  email TEXT UNIQUE,
-  phone TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  customer_id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(200) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  phone VARCHAR(50),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE accounts (
-  account_id SERIAL PRIMARY KEY,
-  customer_id INT NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
-  account_number TEXT UNIQUE NOT NULL,
-  account_type TEXT NOT NULL, -- 'savings', 'current', 'credit'
-  balance NUMERIC(14,2) DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  account_id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  account_number VARCHAR(50) UNIQUE NOT NULL,
+  account_type VARCHAR(50) NOT NULL,
+  balance DECIMAL(14,2) DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 
 CREATE TABLE transactions (
-  transaction_id SERIAL PRIMARY KEY,
-  account_id INT NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
-  tx_type TEXT NOT NULL, -- 'debit', 'credit', 'transfer'
-  amount NUMERIC(14,2) NOT NULL CHECK (amount > 0),
-  tx_time TIMESTAMP NOT NULL,
-  counterparty_account TEXT,
-  location TEXT, -- e.g. 'City,CC' where CC is country code
-  description TEXT
+  transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+  account_id INT NOT NULL,
+  tx_type VARCHAR(50) NOT NULL, -- 'debit','credit','transfer'
+  amount DECIMAL(14,2) NOT NULL,
+  tx_time DATETIME NOT NULL,
+  counterparty_account VARCHAR(50),
+  location VARCHAR(200), -- format 'City,CC' (CC=country code)
+  description TEXT,
+  FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
+  CHECK (amount > 0)
 );
 
 CREATE TABLE fraud_alerts (
-  alert_id SERIAL PRIMARY KEY,
-  transaction_id INT NOT NULL REFERENCES transactions(transaction_id) ON DELETE CASCADE,
-  alert_type TEXT NOT NULL,
-  score NUMERIC(5,2) DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  alert_id INT AUTO_INCREMENT PRIMARY KEY,
+  transaction_id INT NOT NULL,
+  alert_type VARCHAR(100) NOT NULL,
+  score DECIMAL(5,2) DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id) ON DELETE CASCADE
 );
 
 -- Indexes for performance
