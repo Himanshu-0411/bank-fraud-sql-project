@@ -1,4 +1,4 @@
--- Schema for Bank Transactions Fraud Analysis (Postgres)
+
 create database bank;
 use bank;
 
